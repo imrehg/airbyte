@@ -1,0 +1,56 @@
+version: "0.1.0"
+
+definitions:
+  selector:
+    extractor:
+      field_pointer: [ ]
+  requester:
+    url_base: "https://api.starlingbank.com"
+    http_method: "GET"
+    authenticator:
+      type: BearerAuthenticator
+      api_token: "{{ config['api_key'] }}"
+  retriever:
+    record_selector:
+      $ref: "*ref(definitions.selector)"
+    paginator:
+      type: NoPagination
+    requester:
+      $ref: "*ref(definitions.requester)"
+  base_stream:
+    retriever:
+      $ref: "*ref(definitions.retriever)"
+  accounts_stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "accounts"
+      primary_key: "accountUid"
+      path: "/api/v2/accounts"
+      field_pointer: [ "accounts" ]
+  balances_stream:
+    $options:
+      name: "balances"
+      retriever:
+        $ref: "*ref(definitions.retriever)"
+        requester:
+          $ref: "*ref(definitions.requester)"
+          path: "/api/v2/accounts/{{ stream_slice.account_id }}/balance"
+        stream_slicer:
+          type: SubstreamSlicer
+          parent_stream_configs:
+            - stream: "*ref(definitions.accounts_stream)"
+              parent_key: "accountUid"
+              stream_slice_field: "account_id"
+    transformations:
+        - type: AddFields
+          fields:
+            - path: [ "accountUid" ]
+              value: "{{ stream_slice.account_id }}"
+
+streams:
+  - "*ref(definitions.accounts_stream)"
+  - "*ref(definitions.balances_stream)"
+
+check:
+  stream_names:
+    - "accounts"

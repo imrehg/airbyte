@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Bank account details",
+  "properties": {
+    "accountType": {
+      "type": "string"
+    },
+    "accountUid": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "currency": { 
+      "type": "string"
+    },
+    "defaultCategory": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    }
+  }
+}
