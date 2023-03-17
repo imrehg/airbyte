@@ -1,0 +1,6 @@
+*
+!Dockerfile
+!main.py
+!source_aws_cost_explorer
+!setup.py
+!secrets
