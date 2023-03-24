@@ -1544,6 +1544,13 @@ class FeedbackSubmissions(CRMObjectIncrementalStream):
     scopes = {"crm.objects.feedback_submissions.read"}
 
 
+class Goals(CRMSearchStream):
+    entity = "goal_targets"
+    last_modified_field = "hs_lastmodifieddate"
+    primary_key = "id"
+    scopes = {"crm.objects.goal_targets.read"}
+
+
 class LineItems(CRMObjectIncrementalStream):
     entity = "line_item"
     primary_key = "id"
